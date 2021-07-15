@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Asynchronous</title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <a href="index.html" class="btn btn-warning mt-2">&larr;back</a>
+    </div>
+
+
+    <div class="container border-bottom pt-5">
+        <h4>1. Draw a Card</h4>
+        <p id="draw-a-card"></p>
+        <img id="draw-a-card-image" width="150px" src="">
+    </div>
+
+
+    <div class="container border-bottom pt-5">
+        <h4>2. Draw Two Cards from the same deck</h4>
+        <p id="draw-one-card"></p>
+        <img id="draw-one-card-image" width="150px" src="">
+        <p id="draw-two-card" class="mt-3"></p>
+        <img id="draw-two-card-image" width="150px" src="">
+    </div>
+
+    <div class="container-fluid border-bottom pt-5 mt-5" style="background-color: #0d674a; height: 800px;">
+        <h4 style="color: white;">3. Draw a whole deck</h4>
+        <form id="draw-card-form" class="d-block">
+            <button class="btn btn-warning mt-2" style="position:absolute; right:45%;">Draw a card</button>
+        </form>
+        <div id="card-container" style="margin-top: 150px;"></div>
+
+
+
+
+    </div>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.js"></script>
+
+    <script src="deckOfCards.js"></script>
+
+</body>
+
+</html>
