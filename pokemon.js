@@ -1,88 +1,13 @@
 //Url is followed by a pokemon name or ID number
-let url = `https://pokeapi.co/api/v2/pokemon`
+let baseURL = `https://pokeapi.co/api/v2/pokemon`
 ////There are 898 Pokemon in the database
 
-
 let $pokemonForm = $("#pokemon-form")
-
 let $pokemonContainer = $("#pokemon-container")
 
 const randomPokeId = () => {
     return Math.floor(Math.random() * 898);
 }
-//Pokemon 1
-$pokemonForm.submit((evt) => {
-    evt.preventDefault();
-    $pokemonContainer.html("");
-    
-    axios.get(`${url}/${randomPokeId()}`)
-    .then(res => {
-        //Pokemon 1 species
-        console.log(res.data)
-        let markUp1 = `<div class="col">
-                            <div class="card" style="width: 18rem; height: 100%;">
-                                <img src="${res.data.sprites.other["official-artwork"]["front_default"]}" class="card-img-top pokemon-image" alt="...">
-                                <div class="card-body">
-                                    <h3 class="pokemon-name">${res.data.name}</h3>
-                                    <p id="one" class="card-text pokemon-species-flavor-text">
-                            </div>
-                        </div>
-                    </div>`;
-
-        $pokemonContainer.append(markUp1);
-
-        return axios.get(`${res.data.species.url}`)
-    })
-    .then(res => {
-        //Pokemon 1 species flavor text
-        $("#one").text(findEnglishFlavorText(res.data.flavor_text_entries));
-
-        return axios.get(`${url}/${randomPokeId()}`)
-    })
-    .then(res => {
-        //Pokemon 2 species
-        let markUp2 = `<div class="col">
-                        <div class="card" style="width: 18rem; height: 100%;">
-                            <img src="${res.data.sprites.other["official-artwork"]["front_default"]}" class="card-img-top pokemon-image" alt="...">
-                            <div class="card-body">
-                                <h3 class="pokemon-name">${res.data.name}</h3>
-                                <p id="two" class="card-text pokemon-species-flavor-text">
-                        </div>
-                    </div>
-                </div>`;
-
-        $pokemonContainer.append(markUp2);
-
-        return axios.get(`${res.data.species.url}`)
-    })
-    .then(res => {
-        //Pokemon 2 species flavor text
-        $("#two").text(findEnglishFlavorText(res.data.flavor_text_entries));
-
-        return axios.get(`${url}/${randomPokeId()}`)
-    })
-    .then(res => {
-        let markUp3 = `<div class="col">
-                        <div class="card" style="width: 18rem; height: 100%;">
-                            <img src="${res.data.sprites.other["official-artwork"]["front_default"]}" class="card-img-top pokemon-image" alt="...">
-                            <div class="card-body">
-                                <h3 class="pokemon-name">${res.data.name}</h3>
-                                <p id="three" class="card-text pokemon-species-flavor-text">
-                        </div>
-                    </div>
-                </div>`;
-
-        $pokemonContainer.append(markUp3);
-
-        return axios.get(`${res.data.species.url}`)
-    })
-    .then(res => {
-        //Pokemon 3 species flavor text
-        $("#three").text(findEnglishFlavorText(res.data.flavor_text_entries));
-    })
-    .catch(err => console.log("REJECTED!!", err));
-})
-
 
 const findEnglishFlavorText = (arrOfOjects) => {
     for (obj of arrOfOjects) {
@@ -90,8 +15,92 @@ const findEnglishFlavorText = (arrOfOjects) => {
             return obj.flavor_text;
         }
     }
-    return "No English Found."
-}
+    return "No English Found.";
+};
+
+///Pookemon class
+class Pokemon {
+    constructor(id) {
+        this.id = id;
+        this.markup = "";
+        this.englishFlavorText = "";
+    };
+
+    async init() {
+        let res = await axios.get(`${baseURL}/${this.id}`);
+        this.image = res.data.sprites.other["official-artwork"]["front_default"];
+        this.name = res.data.name;
+        this.speciesURL = res.data.species.url;
+        this.getFlavorText();
+    };
+
+
+    async getFlavorText() {
+        let res = await axios.get(`${this.speciesURL}`);
+        this.englishFlavorText = findEnglishFlavorText(res.data.flavor_text_entries);
+    }
+
+    createMarkup() {
+        this.markup = `<div class="col">
+                    <div class="card" style="width: 18rem; height: 100%;">
+                        <img src="${ this.image}" class="card-img-top pokemon-image" alt="...">
+                        <div class="card-body">
+                            <h3 class="pokemon-name">${this.name}</h3>
+                            <p id="one" class="card-text pokemon-species-flavor-text">${this.englishFlavorText}</p>
+                        </div>
+                    </div>
+                </div>`;
+
+        return this.markup;
+    }
+};
+
+
+
+///Make three Pokemon
+let pokemonArray = [];
+
+function createPokemon() {
+    let p1 = new Pokemon(randomPokeId());
+    let p2 = new Pokemon(randomPokeId());
+    let p3 = new Pokemon(randomPokeId());
+
+    p1.init()
+        .then(() => {
+            p2.init();
+        })
+        .then(() => {
+            p3.init();
+        })
+        .then(() => {
+            pokemonArray = [p1, p2, p3];
+            $("#create-pokemon").removeClass("d-none");
+        })
+        .catch((e) => {
+            console.log(e);
+        });
+
+    return pokemonArray;
+};
+
+
+createPokemon();
+
+/////Form submit to show pokemon
+$pokemonForm.submit((evt) => {
+    evt.preventDefault();
+
+    $pokemonContainer.html("");
+
+    pokemonArray.forEach( pokemon => {
+        $pokemonContainer.append(pokemon.createMarkup());
+
+    })
+    createPokemon();
+
+});
+
+
 
 
 

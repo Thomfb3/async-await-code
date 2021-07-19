@@ -24,28 +24,29 @@
 
     <div class="container border-bottom pt-5">
         <h4>1. Draw a Card</h4>
-        <p id="draw-a-card"></p>
-        <img id="draw-a-card-image" width="150px" src="">
+        <button id="draw-one-btn" class="btn btn-warning mt-2 mb-3 d-none" onclick="displayOneCard()">Draw One Card</button>
+        
+        <div id="draw-one">
+        </div>
+
     </div>
 
 
     <div class="container border-bottom pt-5">
         <h4>2. Draw Two Cards from the same deck</h4>
-        <p id="draw-one-card"></p>
-        <img id="draw-one-card-image" width="150px" src="">
-        <p id="draw-two-card" class="mt-3"></p>
-        <img id="draw-two-card-image" width="150px" src="">
+        <button id="draw-two-btn" class="btn btn-warning mt-2 mb-3 d-none" onclick="displayTwoCards()">Draw Two card</button>
+       
+        <div id="draw-two">
+        </div>
+
     </div>
 
     <div class="container-fluid border-bottom pt-5 mt-5" style="background-color: #0d674a; height: 800px;">
         <h4 style="color: white;">3. Draw a whole deck</h4>
         <form id="draw-card-form" class="d-block">
-            <button class="btn btn-warning mt-2" style="position:absolute; right:45%;">Draw a card</button>
+            <button id="draw-deck-btn" class="btn btn-warning mt-2 d-none" style="position:absolute; right:45%;">Draw a card</button>
         </form>
         <div id="card-container" style="margin-top: 150px;"></div>
-
-
-
 
     </div>
 

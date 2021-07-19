@@ -1,55 +1,75 @@
+let baseURL = `http://deckofcardsapi.com/api/deck`;
 
 
-// 1
-let getNewShuffledDeck = `http://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`;
-const $drawACard = $("#draw-a-card");
-const $drawACardImage = $("#draw-a-card-image");
+class Deck {
+    constructor() {
+        this.cards = [];
+        this.cardImages = [];
+    };
 
+    async init() {
+        let res = await axios.get(`${baseURL}/new`);
+        this.deckId = res.data.deck_id;
+    };
 
-axios.get(getNewShuffledDeck)
-    .then(res => {
-        return axios.get(`http://deckofcardsapi.com/api/deck/${res.data.deck_id}/draw/?count=1`);
-    })
-    .then(res => {
-        console.log(`${res.data.cards[0].value} of ${res.data.cards[0].suit}`)
-        $drawACard.text(`${res.data.cards[0].value} of ${res.data.cards[0].suit}`)
-        $drawACardImage.attr("src", `${res.data.cards[0].image}`)
-    })
-    .catch(err => console.log("REJECTED!!", err));
+    async shuffle() {
+        let res = await axios.get(`${baseURL}/${this.deckId}/shuffle/`);
+    };
 
-
-//2
-
-const $drawOneCard = $("#draw-one-card");
-const $drawOneCardImage = $("#draw-one-card-image");
-const $drawTwoCard = $("#draw-two-card");
-const $drawTwoCardImage = $("#draw-two-card-image");
-
-let getNewShuffledDeck2 = `http://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`;
-
-axios.get(getNewShuffledDeck2)
-    .then(res => {
-        return axios.get(`http://deckofcardsapi.com/api/deck/${res.data.deck_id}/draw/?count=1`);
-    })
-    .then(res => {
-        console.log(`${res.data.cards[0].value} of ${res.data.cards[0].suit}`)
-        $drawOneCard.text(`${res.data.cards[0].value} of ${res.data.cards[0].suit}`)
-        $drawOneCardImage.attr("src", `${res.data.cards[0].image}`)
-        return axios.get(`http://deckofcardsapi.com/api/deck/${res.data.deck_id}/draw/?count=1`);
-    })
-    .then(res => {
-        console.log(`${res.data.cards[0].value} of ${res.data.cards[0].suit}`)
-        $drawTwoCard.text(`${res.data.cards[0].value} of ${res.data.cards[0].suit}`)
-        $drawTwoCardImage.attr("src", `${res.data.cards[0].image}`)
-    })
-    .catch(err => console.log("REJECTED!!", err));
+    async drawCard(numberOfCards) {
+        let res = await axios.get(`${baseURL}/${this.deckId}/draw/?count=${numberOfCards}`);
+        res.data.cards.forEach(card => {
+            this.cards.push(`<p id="draw-a-card" class="pb-1" >${card.value} of ${card.suit}</p>
+            <img id="draw-a-card-image" class="mb-3" width="150px" src="${card.image}">`)
+        });
+        
+        res.data.cards.forEach(card => {
+            this.cardImages.push(card.image)
+        });
+    };
+};
 
 
 
-//3
+////////////1
+const deck = new Deck;
 
+deck.init()
+.then(() => {
+   return deck.shuffle();
+})
+.then(() => {
+    return deck.drawCard(4);
+})
+.then(() => {
+    $("#draw-one-btn").removeClass("d-none");
+    $("#draw-two-btn").removeClass("d-none");
+    $("#draw-deck-btn").removeClass("d-none");
+})
+.catch((e) => {
+    console.log(e);
+    alert(`${e}.\r\nPlease refresh and try again.`)
+});
+
+
+function displayOneCard() {
+    $("#draw-one").html(`${deck.cards[0]}`);
+}
+
+
+
+////////////2
+function displayTwoCards() {
+    $("#draw-two").html(deck.cards[1]);
+    $("#draw-two").append(deck.cards[2]);
+}
+
+
+
+////////////3
 const $drawCardForm = $("#draw-card-form")
 const $cardContainer = $("#card-container");
+
 
 const randomDegree = () => {
     return 45 - (Math.floor(Math.random() * 90));
@@ -59,20 +79,16 @@ const randomTop = () => {
     return 10 - (Math.floor(Math.random() * 20));
 }
 
-
-let getNewShuffledDeck3 = `http://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`;
-
-$drawCardForm.submit((evt) =>{
+$drawCardForm.submit((evt) => {
     evt.preventDefault();
-    axios.get(getNewShuffledDeck3)
-    .then(res => {
-        return axios.get(`http://deckofcardsapi.com/api/deck/${res.data.deck_id}/draw/?count=1`);
-    })
-    .then(res => {
-        console.log(`${res.data.cards[0].value} of ${res.data.cards[0].suit}`)
-        $cardContainer.append(`<img src='${res.data.cards[0].image}' style='position:absolute; right:40%; margin-top:${randomTop()}px ; transform: rotate(${randomDegree()}deg);' >`)
-    })
-    .catch(err => console.log("REJECTED!!", err));
+
+    // $cardContainer.append(`${deck3.cards[deck3.cards.length -1]}`);
+    $cardContainer.append(`<img src='${deck.cardImages[deck.cardImages.length-1]}' style='position:absolute; right:40%; margin-top:${randomTop()}px ; transform: rotate(${randomDegree()}deg);' >`)
+
+    deck.drawCard(1);
+
 })
+
+
 
 
